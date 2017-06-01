@@ -1,0 +1,90 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
+<html>
+	<head>
+		<title>Good Buy</title>
+		<fmt:setLocale value="pt_br"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		
+		<link href="<c:url value="/css/goodbuy.css"/>" rel="stylesheet" type="text/css" media="screen" />
+		<link href="<c:url value="/css/jquery-ui.css"/>" rel="stylesheet" type="text/css" media="screen" />
+		<link href="<c:url value="/css/jquery.autocomplete.css"/>" rel="stylesheet" type="text/css" media="screen" />
+		
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery-1.8.3.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery-ui.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery.autocomplete.min.js"/>"></script>
+		<%--
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery.hint.min.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery.james.min.js"/>"></script>
+		--%>
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery.maskedinput.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery.puts.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/javascripts/jquery.validate.min.js"/>"></script>
+		
+		
+		<script type="text/javascript">	
+			jQuery(function($){
+			   $("#contato_dtNascimento").mask("99/99/9999");
+			   $("#endereco_cep").mask("99999-999");
+			   $("#fone_ddd").mask("99");
+			   //$("#fone_numeroFone").mask("99999-9999");
+			   $(".fone_numero").mask("99999-9999");
+			});
+		</script>
+	</head>
+	
+	<body>
+		<div id="header">
+		</div>
+		<div id="erros">
+			<ul>
+			</ul>
+		</div>
+		<div id="body">
+			<div id="menu">
+				<ul>
+					<li>
+						<a href="<c:url value="/"/>">Home</a>
+					</li>
+					
+					<li>
+						<a href="<c:url value="/agenda"/>">Listar Contatos</a>
+					</li>
+					
+					<li>
+						<a href="<c:url value="/agenda/novo/contato"/>">Adicionar Contato</a>
+					</li>
+					
+					<li>
+						<a href="<c:url value="/contato"/>">Contato com o desenvolvedor!</a>
+					</li>
+					
+					<li>
+						<form action="<c:url value="/agenda/search/search"/>">
+							<input id="busca" name="nome" />
+							
+							<script type="text/javascript">
+								$("#busca").puts("Pesquisar contatos por nome!");
+
+								$("#busca").autocomplete('<c:url value="/agenda/json/search.json"/>', {
+									dataType: "json",
+									parse: function(contatos) {
+										return $.map(contatos, function(contato) {
+											return {
+												data: contato,
+												value: contato.nome,
+												result: contato.nome
+											};
+										});
+									},
+									formatItem: function(contato) {
+										return contato.nome + " - " + contato.email;
+									}
+								});
+							</script>
+						</form>
+					</li>
+				</ul>
+			</div>
+			<div id="content">
