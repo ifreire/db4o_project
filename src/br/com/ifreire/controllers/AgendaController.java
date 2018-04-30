@@ -5,8 +5,6 @@ import static br.com.caelum.vraptor.view.Results.json;
 import java.util.ArrayList;
 import java.util.List;
 
-//import sun.org.mozilla.javascript.internal.json.JsonParser;
-
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -15,8 +13,8 @@ import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.validator.ValidationMessage;
-import br.com.ifreire.daos.AgendaDAO;
-import br.com.ifreire.daos.FoneDAO;
+import br.com.ifreire.daos.FacAgenda;
+import br.com.ifreire.daos.FacFone;
 import br.com.ifreire.models.Agenda;
 import br.com.ifreire.models.contato.Contato;
 import br.com.ifreire.models.contato.Endereco;
@@ -26,8 +24,6 @@ import br.com.ifreire.models.contato.Fone;
 @SuppressWarnings("unused")
 public class AgendaController
 {
-	private final AgendaDAO agendaDAO;
-	private final FoneDAO foneDAO;
 	private final Result result;
 	private final Validator validator;
 	
@@ -47,8 +43,6 @@ public class AgendaController
 	
 	public AgendaController(Result result, Validator validator)
 	{
-		this.agendaDAO = new AgendaDAO();
-		this.foneDAO = new FoneDAO();
 		this.result = result;
 		this.validator = validator;
 	}
@@ -62,10 +56,10 @@ public class AgendaController
 	@Get("/agenda/{id}")
 	public void editarContato(String id)
 	{
-		Agenda agenda = loadById(id);
+		Agenda agenda = FacAgenda.Instance().loadById(id);
 		
 		List<Fone> fones = new ArrayList<Fone>();
-		fones = loadFonesByAgenda(id);
+		fones = FacFone.Instance().loadByAgenda(id);
 		
 		result.include("agenda", agenda);
 		result.include("contato", agenda.getContato());
@@ -76,10 +70,10 @@ public class AgendaController
 	@Get("/agenda/form/foneForm/{id}")
 	public void foneForm(String id)
 	{
-		Agenda agenda = loadById(id);
+		Agenda agenda = FacAgenda.Instance().loadById(id);
 		
 		List<Fone> fones = new ArrayList<Fone>();
-		fones = loadFonesByAgenda(id);
+		fones = FacFone.Instance().loadByAgenda(id);
 		
 		result.include("agenda", agenda);
 		result.include("contato", agenda.getContato());
@@ -89,7 +83,7 @@ public class AgendaController
 	@Post("/agenda")
 	public void add(Contato contato, Endereco endereco, Fone fone)
 	{
-		if (!existContato(contato.getEmail()))
+		if (!FacAgenda.Instance().existContato(contato.getEmail()))
 		{
 			System.out.println("Adicionando um novo contato...");
 			
@@ -98,11 +92,11 @@ public class AgendaController
 			ag.setContato(contato);
 			ag.setEndereco(endereco);
 			
-			store(ag);
+			FacAgenda.Instance().store(ag);
 			
 			fone.setIdAgenda(ag.getId());
 			
-			storeFone(fone);
+			FacFone.Instance().store(fone);
 			
 			result.redirectTo(this).list();
 		}
@@ -116,25 +110,25 @@ public class AgendaController
 	public void addFone(Agenda agenda, Contato contato, Fone fone)
 	{
 		fone.setIdAgenda(agenda.getId());
-		storeFone(fone);
+		FacFone.Instance().store(fone);
 		result.redirectTo(this).foneForm(agenda.getId());
 	}
 	
 	@Put("/agenda/{agenda.id}")
 	public void alter(Agenda agenda, Contato contato, Endereco endereco, List<Fone> fones)
 	{
-		Agenda ag = loadById(agenda.getId());
+		Agenda ag = FacAgenda.Instance().loadById(agenda.getId());
 		boolean isDiferente = false;
 		
 		ag.setContato(contato);
 		ag.setEndereco(endereco);
-		update(ag);
+		FacAgenda.Instance().update(ag);
 		
 		for (Fone fone : fones)
 		{
 			fone.setIdAgenda(ag.getId());
 			
-			Fone foneFromDB = loadFone(fone.getId());
+			Fone foneFromDB = FacFone.Instance().loadById(fone.getId());
 			
 			if (foneFromDB.getTipoFone() != fone.getTipoFone())
 			{
@@ -155,7 +149,7 @@ public class AgendaController
 			}
 			
 			if (isDiferente)
-				updateFone(foneFromDB);
+				FacFone.Instance().update(foneFromDB);
 		}
 		
 		result.redirectTo(this).list();
@@ -165,7 +159,7 @@ public class AgendaController
 	@Get("/agenda/delete/{id}")
 	public void delete(String id)
 	{
-		remove(loadById(id));
+		FacAgenda.Instance().remove(FacAgenda.Instance().loadById(id));
 		result.redirectTo(this).list();
 	}
 	
@@ -175,7 +169,7 @@ public class AgendaController
 	{
 		for(String id : idsAgenda)
 		{
-			remove(loadById(id));
+			FacAgenda.Instance().remove(FacAgenda.Instance().loadById(id));
 		}
 		
 		result.redirectTo(this).list();
@@ -185,22 +179,22 @@ public class AgendaController
 	@Get("/agenda/deleteFone/{id}")
 	public void deleteFone(String id)
 	{
-		Fone fone = loadFone(id);
-		removeFone(fone);
+		Fone fone = FacFone.Instance().loadById(id);
+		FacFone.Instance().remove(fone);
 		result.redirectTo(this).foneForm(fone.getIdAgenda());
 	}
 	
 	@Get("/agenda")
 	public List<Agenda> list()
 	{
-		return agendaDAO.list();
+		return FacAgenda.Instance().list();
 	}
 	
 	@Get("/agenda/search/search")
 	public List<Agenda> search(String nome)
 	{
 		result.include("nome", nome);
-		return searchContatoByJSON(nome);
+		return FacAgenda.Instance().searchContatoByJSON(nome);
 	}
 	
 	@Get("/agenda/json/search.json")
@@ -208,79 +202,9 @@ public class AgendaController
 	{
 		List<Contato> listaContatos = new ArrayList<Contato>();
 		
-		for(Agenda agenda : searchContatoByJSON(q))
+		for(Agenda agenda : FacAgenda.Instance().searchContatoByJSON(q))
 			listaContatos.add(agenda.getContato());
 		
-		result.
-		use(json()).
-		withoutRoot().
-		from(listaContatos).
-		exclude("dtNascimento", "descricao", "foto").
-		serialize();
-	}
-	
-	private boolean existContato(String email)
-	{
-		return agendaDAO.existContato(email);
-	}
-	
-	private List<Agenda> searchContatoByJSON(String q)
-	{
-		return agendaDAO.search(q);
-	}
-	
-	private void store(Agenda agenda)
-	{
-		agendaDAO.store(agenda);
-	}
-	
-	private boolean existsFone(String idFone)
-	{
-		return foneDAO.existsFone(idFone);
-	}
-	
-	private void storeFone(Fone fone)
-	{
-		foneDAO.store(fone);
-	}
-	
-	private void update(Agenda agenda)
-	{
-		agendaDAO.update(agenda);
-	}
-	
-	private void updateFone(Fone fone)
-	{
-		foneDAO.update(fone);
-	}
-	
-	private void remove(String idAgenda)
-	{
-		agendaDAO.delete(idAgenda);
-	}
-	
-	private void removeFone(Fone fone)
-	{
-		foneDAO.delete(fone);
-	}
-	
-	private void remove(Agenda agenda)
-	{
-		agendaDAO.delete(agenda);
-	}
-	
-	private Fone loadFone(String id)
-	{
-		return foneDAO.loadFone(id);
-	}
-	
-	private List<Fone> loadFonesByAgenda(String idAgenda)
-	{
-		return foneDAO.loadFonesByAgenda(idAgenda);
-	}
-	
-	private Agenda loadById(String id)
-	{
-		return agendaDAO.loadById(id);
+		result.use(json()).withoutRoot().from(listaContatos).exclude("dtNascimento", "descricao", "foto").serialize();
 	}
 }

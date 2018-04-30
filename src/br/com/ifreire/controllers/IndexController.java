@@ -18,6 +18,5 @@ public class IndexController
 	public void index()
 	{
 		result.include("variable", "VRaptor!");
-		//result.redirectTo(AgendaController.class).list();
 	}
 }

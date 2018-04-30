@@ -1,11 +1,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Good Buy</title>
 		<fmt:setLocale value="pt_br"/>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		
 		<link href="<c:url value="/css/goodbuy.css"/>" rel="stylesheet" type="text/css" media="screen" />
 		<link href="<c:url value="/css/jquery-ui.css"/>" rel="stylesheet" type="text/css" media="screen" />

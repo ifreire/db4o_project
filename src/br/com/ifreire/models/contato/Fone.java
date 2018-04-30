@@ -9,9 +9,10 @@ public class Fone extends IDHolder
 	private int ddd;
 	private String numeroFone;
 	
-	public Fone(String idFone, String tipoFone, int ddd, String numeroFone)
+	public Fone(/*String idFone,*/ String tipoFone, int ddd, String numeroFone)
 	{
-		super(idFone);
+		//super(idFone);
+		super("");
 		this.tipoFone = tipoFone;
 		this.ddd = ddd;
 		this.numeroFone = numeroFone;

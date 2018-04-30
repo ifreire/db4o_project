@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.ifreire.models.Agenda;
-import br.com.ifreire.models.contato.*;
+import br.com.ifreire.models.contato.Fone;
 
 public class ReportsController
 {
@@ -41,7 +41,6 @@ public class ReportsController
 			{
 				for (Fone fone : foneList)
 				{
-					//if (agenda.getId() == fone.getId())
 					if (agenda.getId().equals(fone.getId()))
 					{
 						agenda.setFoneList(foneList);

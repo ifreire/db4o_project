@@ -14,6 +14,11 @@ import br.com.ifreire.models.contato.Fone;
 @SuppressWarnings("serial")
 public class FoneDAO extends DAO
 {
+	public FoneDAO()
+	{
+		super();
+	}
+	
 	public void storeFone(Fone fone)
 	{
 		store(fone);
@@ -21,30 +26,16 @@ public class FoneDAO extends DAO
 	
 	public boolean existsFone(String idFone)
 	{
-		Fone fone = loadFone(idFone);
-		
-		if (fone == null)
-			return false;
-		else
-			return true;
+		return loadByID(idFone) != null;
 	}
 	
 	public List<Fone> list()
 	{
-		ObjectSet<Fone> fonesFromBD;
 		List<Fone> list;
-		int tamanho;
-
+		
 		try
 		{
-			fonesFromBD = container.query(Fone.class);
-			list = new ArrayList<Fone>();
-			tamanho = fonesFromBD.size();
-			
-			for (int x = 0; x < tamanho; x++)
-			{
-				list.add((Fone) fonesFromBD.get(x));
-			}
+			list = new ArrayList<Fone>(container.query(Fone.class));
 		}
 		catch(Exception e)
 		{
@@ -56,19 +47,17 @@ public class FoneDAO extends DAO
 	
 	public void update(Fone fone)
 	{
-		Fone f = loadFoneByID(fone.getId());
-		
+		Fone f = loadByID(fone.getId());
 		f = fone;
-		
 		store(f);
 	}
 
 	public void remove(String idFone)
 	{
-		delete(loadFoneByID(idFone));
+		delete(loadByID(idFone));
 	}
 	
-	public Fone loadFoneByID(final String id)
+	public Fone loadByID(final String id)
 	{
 		ObjectSet<Fone> listFonesFromDB;
 		Fone foneFromDB = null;
@@ -85,53 +74,19 @@ public class FoneDAO extends DAO
 									   }
 								   }
 					          );
+			
+			if (listFonesFromDB.size() > 0)
+				foneFromDB = listFonesFromDB.get(0);
 		}
 		catch (Exception e)
 		{
 			throw e;
-		}
-		
-		for (Fone fone : listFonesFromDB)
-		{
-			foneFromDB = fone;
 		}
 		
 		return foneFromDB;
 	}
-	
-	public Fone loadFone(final String id)
-	{
-		ObjectSet<Fone> listFonesFromDB;
-		Fone f = null;
-		
-		try
-		{
-			listFonesFromDB = container.
-							  query(new Predicate<Fone>()
-						 		   {
-							 	       @Override
-									   public boolean match(Fone f)
-									   {
-										   return f.getId().equals(id);
-									   }
-								   }
-					          );
-		}
-		catch (Exception e)
-		{
-			throw e;
-		}
-		
-		for (Fone fone : listFonesFromDB)
-		{
-			f = fone;
-			break;
-		}
-		
-		return f;
-	}
 
-	public List<Fone> loadFonesByAgenda(final String idAgenda)
+	public List<Fone> loadByAgenda(final String idAgenda)
 	{
 		ObjectSet<Fone> listFonesFromDB;
 		List<Fone> fones = new ArrayList<Fone>();
@@ -148,15 +103,12 @@ public class FoneDAO extends DAO
 									   }
 								   }
 					          );
+			
+			fones.addAll(listFonesFromDB);
 		}
 		catch (Exception e)
 		{
 			throw e;
-		}
-		
-		for (Fone fone : listFonesFromDB)
-		{
-			fones.add(fone);
 		}
 		
 		return fones;

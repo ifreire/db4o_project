@@ -1,8 +1,8 @@
 package br.com.ifreire.models.contato;
 
-//import br.com.ifreire.models.IDHolder;
+import br.com.ifreire.models.IDHolder;
 
-public class Endereco //extends IDHolder
+public class Endereco extends IDHolder
 {
 	private String tipoLog;
 	private String logradouro;
@@ -15,7 +15,7 @@ public class Endereco //extends IDHolder
 	
 	public Endereco(String tipoLog, String logradouro, int numeroEndereco, String complemento, String bairro, String cidade, String uf, String cep)
 	{
-		//supre(id);
+		super("");
 		this.tipoLog = tipoLog;
 		this.logradouro = logradouro;
 		this.numeroEndereco = numeroEndereco;

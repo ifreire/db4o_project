@@ -13,6 +13,11 @@ import br.com.ifreire.models.Agenda;
 @SuppressWarnings("serial")
 public class AgendaDAO extends DAO
 {
+	public AgendaDAO()
+	{
+		super();
+	}
+	
 	public boolean existContato(final String email)
 	{
 		ObjectSet<Agenda> result = null;
@@ -39,18 +44,12 @@ public class AgendaDAO extends DAO
 	{
 		ObjectSet<Agenda> agendaFromBD;
 		List<Agenda> list;
-		int tamanho;
 
 		try
 		{
 			agendaFromBD = super.container.query(Agenda.class);
 			list = new ArrayList<Agenda>();
-			tamanho = agendaFromBD.size();
-			
-			for (int x = 0; x < tamanho; x++)
-			{
-				list.add((Agenda) agendaFromBD.get(x));
-			}
+			list.addAll(agendaFromBD);
 		}
 		catch(Exception e)
 		{
@@ -80,10 +79,7 @@ public class AgendaDAO extends DAO
 			
 			list = new ArrayList<Agenda>();
 			
-			for (Agenda ag : agendaFromBD)
-			{
-				list.add(ag);
-			}
+			list.addAll(agendaFromBD);
 		}
 		catch(Exception e)
 		{
@@ -121,17 +117,13 @@ public class AgendaDAO extends DAO
 	public void update(Agenda agenda)
 	{
 		Agenda ag = loadById(agenda.getId());
-		
 		ag = agenda;
-		
 		store(ag);
 	}
 	
 	public void deleteAgenda(String idAgenda)
 	{
-		Agenda agenda = loadById(idAgenda);
-		
-		delete(agenda);
+		delete(loadById(idAgenda));
 	}
 	
 	public Agenda loadById(final String id)
@@ -151,15 +143,13 @@ public class AgendaDAO extends DAO
 									   }
 								   }
 					          );
+			
+			if (listFromDB.size() > 0)
+				return listFromDB.get(0);
 		}
 		catch (Exception e)
 		{
 			throw e;
-		}
-		
-		for (Agenda agenda : listFromDB)
-		{
-			agFromBD = agenda;
 		}
 		
 		return agFromBD;
