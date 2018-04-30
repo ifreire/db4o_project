@@ -1,12 +1,13 @@
 package br.com.ifreire.daos;
 
 import org.apache.commons.mail.*;
+
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.ifreire.models.Mensagem;
 
+@Component
 public class ContactDAO extends DAO
 {
-	//  Método responsável por estanciar um novo objeto SimpleMail, configurá-lo e enviá-lo aos administradores do sistema.
-	//	@SuppressWarnings("deprecation")
 	public boolean sendMail(Mensagem mensagem)
 	{
 		boolean enviou = false;

@@ -1,10 +1,8 @@
 package br.com.ifreire.models.contato;
 
-//import java.util.Calendar;
-//import java.util.List;
-//import br.com.ifreire.models.IDHolder;
+import br.com.ifreire.models.IDHolder;
 
-public class Contato //extends IDHolder
+public class Contato extends IDHolder
 {
 	private String nome;
 	private String dtNascimento;
@@ -14,7 +12,7 @@ public class Contato //extends IDHolder
 
 	public Contato(String nome, String dtNascimento, String email, String descricao, String foto)
 	{
-		//super(id);
+		super("");
 		this.nome = nome;
 		this.dtNascimento = dtNascimento;
 		this.email = email;

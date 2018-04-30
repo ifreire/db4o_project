@@ -5,10 +5,7 @@
 						
 						<table>
 							<tr>
-								<td>
-								
-								
-								</td>
+								<td colspan="3"></td>
 							</tr>
 							
 							<%@ include file="_contatoForm.jsp" %>

@@ -16,8 +16,6 @@ public class ContactController
 	private final Result result;
 	private final Validator validator;
 
-	//  Construtor do controlador.
-	//  Esse método é executado pelo VRaptor.
 	public ContactController(Result result, Validator validator)
 	{
 		this.contactDAO = new ContactDAO();
@@ -25,15 +23,12 @@ public class ContactController
 		this.validator = validator;
 	}
 
-	//  Abre a página para um usuário cadastrado ou não entre em contato com os administradores do site.
 	@Get("/contato")
 	public void newContactForm() { }
 
-	//  Abre a página de confirmação de envio da mensagem.
 	@Get("/contato/send")
 	public void mensagemEnviada() { }
 
-	//  Método responsável por enviar a mensagem para os administradores do site.
 	@Post("/sendMail")
 	public void send(Mensagem mensagem)
 	{

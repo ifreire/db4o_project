@@ -15,7 +15,7 @@ import java.io.File;
 @SessionScoped
 public class Db4oSessions_old
 {
-    private static final String DATABASE_FILE_NAME = "dbAgenda.db4o";
+    private static final String DATABASE_FILE_NAME = "mtc.db4o"; // "dbAgenda.db4o";
 
     public static void main(String[] args)
     {
