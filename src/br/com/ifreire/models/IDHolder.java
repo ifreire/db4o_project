@@ -14,7 +14,7 @@ public abstract class IDHolder
 		else
 			this.id = newId();
 		
-		this.idEntity = newId();
+		this.idEntity = this.id;
 	}
 	
 	private static String newId()
